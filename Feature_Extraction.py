@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[3]:
+# In[ ]:
 
 
 import cv2
@@ -12,7 +12,7 @@ from skimage import data
 import scipy
 
 
-# In[9]:
+# In[ ]:
 
 
 def create_hist (image):
@@ -30,7 +30,7 @@ def create_hist (image):
     return hist
 
 
-# In[10]:
+# In[ ]:
 
 
 def calculate_hist (hist):
@@ -55,10 +55,14 @@ def calculate_hist (hist):
     return mean_hist, median_hist, std_hist, skewness_hist, kurtosis_hist
 
 
-# In[8]:
+# In[ ]:
 
 
-def calculate_glcm (image, distance, angle, level):
+import numpy as np
+from skimage.feature import graycomatrix, graycoprops
+from skimage.io import imread
+
+def calculate_glcm(image, distance, angle, level):
     #Example: glcm = graycomatrix(patient_1, distances=[100], angles=[0], levels=256, symmetric=True, normed=True)
     """
     Calculate the Gray Level Co-occurrence Matrix (GLCM) and its properties.
@@ -75,24 +79,42 @@ def calculate_glcm (image, distance, angle, level):
     homogeneity (numpy.ndarray): The homogeneity of the GLCM.
     energy (numpy.ndarray): The energy of the GLCM.
     correlation (numpy.ndarray): The correlation of the GLCM.
+    entropy (numpy.ndarray): The entropy of the GLCM.
     """
-    glcm = graycomatrix(image, distance, angle, level, symmetric=True, normed=True)
+    # Compute GLCM
+    glcm = graycomatrix(image, distances=distance, angles=angle, levels=level, symmetric=True, normed=True)
+    
+    # Compute GLCM properties
     contrast = graycoprops(glcm, 'contrast')
     dissimilarity = graycoprops(glcm, 'dissimilarity')
     homogeneity = graycoprops(glcm, 'homogeneity')
     energy = graycoprops(glcm, 'energy')
     correlation = graycoprops(glcm, 'correlation')
-    return contrast, dissimilarity, homogeneity, energy, correlation
+    entropy = -np.sum(glcm * np.log2(glcm + (glcm == 0)), axis=(0, 1))
+    
+    return contrast, dissimilarity, homogeneity, energy, correlation, entropy
 
+# # Usage Example
+# #First read the images
 
-# In[11]:
+# # Ensure the image is in 8-bit integer format
+# image = (image * 255).astype(np.uint8) if image.dtype != np.uint8 else image
 
+# # Define distances and angles
+# distances = [1]
+# angles = [0]
 
-#kantendetektion
+# # Calculate GLCM properties
+# contrast, dissimilarity, homogeneity, energy, correlation, entropy = calculate_glcm(image, distances, angles, level=256)
 
-
-# In[ ]:
-
-
-
+# # Display the results
+# angles_degrees = [0]
+# for i, angle in enumerate(angles_degrees):
+#     print(f"Angle {angle} degrees:")
+#     print(f"    Contrast: {contrast[0, i]}")
+#     print(f"    Dissimilarity: {dissimilarity[0, i]}")
+#     print(f"    Homogeneity: {homogeneity[0, i]}")
+#     print(f"    Energy: {energy[0, i]}")
+#     print(f"    Correlation: {correlation[0, i]}")
+#     print(f"    Entropy: {entropy[i]}")
 
