@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
+# In[3]:
 
 
 import cv2
@@ -10,9 +10,10 @@ import matplotlib.pyplot as plt
 from skimage.feature import graycomatrix, graycoprops
 from skimage import data
 import scipy
+from glrlm import GLRLM
 
 
-# In[ ]:
+# In[9]:
 
 
 def create_hist (image):
@@ -28,9 +29,6 @@ def create_hist (image):
     # Calculate the histogram for the grayscale image
     hist = cv2.calcHist([image], [0], None, [256], [0, 256])
     return hist
-
-
-# In[ ]:
 
 
 def calculate_hist (hist):
@@ -55,14 +53,7 @@ def calculate_hist (hist):
     return mean_hist, median_hist, std_hist, skewness_hist, kurtosis_hist
 
 
-# In[ ]:
-
-
-import numpy as np
-from skimage.feature import graycomatrix, graycoprops
-from skimage.io import imread
-
-def calculate_glcm(image, distance, angle, level):
+def calculate_glcm (image, distance, angle, level):
     #Example: glcm = graycomatrix(patient_1, distances=[100], angles=[0], levels=256, symmetric=True, normed=True)
     """
     Calculate the Gray Level Co-occurrence Matrix (GLCM) and its properties.
@@ -79,42 +70,50 @@ def calculate_glcm(image, distance, angle, level):
     homogeneity (numpy.ndarray): The homogeneity of the GLCM.
     energy (numpy.ndarray): The energy of the GLCM.
     correlation (numpy.ndarray): The correlation of the GLCM.
-    entropy (numpy.ndarray): The entropy of the GLCM.
     """
-    # Compute GLCM
-    glcm = graycomatrix(image, distances=distance, angles=angle, levels=level, symmetric=True, normed=True)
-    
-    # Compute GLCM properties
+    glcm = graycomatrix(image, distance, angle, level, symmetric=True, normed=True)
     contrast = graycoprops(glcm, 'contrast')
     dissimilarity = graycoprops(glcm, 'dissimilarity')
     homogeneity = graycoprops(glcm, 'homogeneity')
     energy = graycoprops(glcm, 'energy')
     correlation = graycoprops(glcm, 'correlation')
-    entropy = -np.sum(glcm * np.log2(glcm + (glcm == 0)), axis=(0, 1))
+    return contrast, dissimilarity, homogeneity, energy, correlation
+
+
+def calculate_glrlm(image):
+    """
+    Calculate Gray Level Run Length Matrix (GLRLM) features from an input image.
     
-    return contrast, dissimilarity, homogeneity, energy, correlation, entropy
+    This function reads an input image in grayscale, computes the GLRLM features,
+    and returns several statistical measurements derived from the GLRLM.
 
-# # Usage Example
-# #First read the images
+    Parameters:
+    -----------
+    image : str
+        Path to the input image file.
 
-# # Ensure the image is in 8-bit integer format
-# image = (image * 255).astype(np.uint8) if image.dtype != np.uint8 else image
+    Returns:
+    --------
+    tuple
+        A tuple containing the following GLRLM features:
+        - SRE (Short Run Emphasis)
+        - LRE (Long Run Emphasis)
+        - GLU (Gray Level Uniformity)
+        - RLU (Run Length Uniformity)
+        - RPC (Run Percentage)
 
-# # Define distances and angles
-# distances = [1]
-# angles = [0]
+    Example:
+    --------
+    >>> sre, lre, glu, rlu, rpc = calculate_glrlm('path/to/image.png')
+    >>> print(f"SRE: {sre}, LRE: {lre}, GLU: {glu}, RLU: {rlu}, RPC: {rpc}")
 
-# # Calculate GLCM properties
-# contrast, dissimilarity, homogeneity, energy, correlation, entropy = calculate_glcm(image, distances, angles, level=256)
+    """
+    img = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
+    app = GLRLM()
+    features = app.get_features(img, 8)
+    return features.SRE, features.LRE, features.GLU, features.RLU, features.RPC
 
-# # Display the results
-# angles_degrees = [0]
-# for i, angle in enumerate(angles_degrees):
-#     print(f"Angle {angle} degrees:")
-#     print(f"    Contrast: {contrast[0, i]}")
-#     print(f"    Dissimilarity: {dissimilarity[0, i]}")
-#     print(f"    Homogeneity: {homogeneity[0, i]}")
-#     print(f"    Energy: {energy[0, i]}")
-#     print(f"    Correlation: {correlation[0, i]}")
-#     print(f"    Entropy: {entropy[i]}")
+
+
+
 
