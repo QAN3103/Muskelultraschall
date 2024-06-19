@@ -1,16 +1,25 @@
-#!/usr/bin/env python
-# coding: utf-8
+# ---
+# jupyter:
+#   jupytext:
+#     text_representation:
+#       extension: .py
+#       format_name: light
+#       format_version: '1.5'
+#       jupytext_version: 1.16.2
+#   kernelspec:
+#     display_name: Python 3 (ipykernel)
+#     language: python
+#     name: python3
+# ---
 
-# In[ ]:
-
-
+# + cell_id="eb3e6e8d9cb3473fb7fc7126c9c2a29c" deepnote_cell_type="code"
 # Install all the packages
-get_ipython().system('apt-get update')
-get_ipython().system('apt-get install -y libgl1-mesa-glx')
-#!pip install opencv-python-headless pillow matplotlib
-get_ipython().system('pip install opencv-contrib-python')
-get_ipython().system('pip install scikit-image')
-get_ipython().system('pip install glrlm')
+# !apt-get update
+# !apt-get install -y libgl1-mesa-glx
+# #!pip install opencv-python-headless pillow matplotlib
+# !pip install opencv-contrib-python
+# !pip install scikit-image
+# !pip install glrlm
 import scipy
 from scipy.integrate import quad
 #Import all the packages
@@ -27,17 +36,7 @@ from skimage import data
 from glrlm import GLRLM
 
 
-# In[ ]:
-
-
-import pandas as pd
-import cv2
-import os
-import numpy as np
-import scipy
-from skimage.feature import graycomatrix, graycoprops
-from glrlm import GLRLM
-
+# + cell_id="525b15d9bef04e70b86329b7f792d385" deepnote_cell_type="code"
 def read_image_ids(csv_path):
     """
     Read image IDs from a CSV file.
@@ -45,6 +44,7 @@ def read_image_ids(csv_path):
     df = pd.read_csv(csv_path)
     return df['Image_ID'].tolist(), df
 
+# Define all the features
 def create_hist(image):
     """
     Create a histogram for a grayscale image.
@@ -55,6 +55,7 @@ def create_hist(image):
     Returns:
     hist (numpy.ndarray): The histogram of the image.
     """
+    # Calculate the histogram for the grayscale image
     hist = cv2.calcHist([image], [0], None, [256], [0, 256])
     return hist
 
@@ -72,11 +73,26 @@ def calculate_hist(hist):
     skewness_hist (float): The skewness of the histogram.
     kurtosis_hist (float): The kurtosis of the histogram.
     """
-    mean_hist = float(np.mean(hist))
-    median_hist = float(np.median(hist))
-    std_hist = float(np.std(hist))
-    skewness_hist = float(scipy.stats.skew(hist, axis=0, bias=True)[0])
-    kurtosis_hist = float(scipy.stats.kurtosis(hist, axis=0, fisher=True, bias=True)[0])
+    # Normalize the histogram
+    hist_normalized = hist.ravel() / hist.sum()
+
+    # Calculate the mean 
+    mean_hist = np.sum(hist_normalized * np.arange(256))
+
+    # Calculate the standard deviation 
+    std_hist = np.sqrt(np.sum(hist_normalized * (np.arange(256) - mean_hist)**2))
+
+    # Calculate the skewness 
+    skewness_hist = np.sum(hist_normalized * ((np.arange(256) - mean_hist) ** 3)) / (std_hist ** 3)
+
+    # Calculate the kurtosis 
+    kurtosis_hist = np.sum(hist_normalized * ((np.arange(256) - mean_hist) ** 4)) / (std_hist ** 4)
+
+    # Calculate the cumulative histogram to find the median
+    cumulative_hist = np.cumsum(hist_normalized)
+
+    # Find the median pixel value
+    median_hist = np.searchsorted(cumulative_hist, 0.5)
     return mean_hist, median_hist, std_hist, skewness_hist, kurtosis_hist
 
 def calculate_glcm(image, distances, angles, levels):
@@ -110,11 +126,36 @@ def calculate_glcm(image, distances, angles, levels):
 def calculate_glrlm(image):
     """
     Calculate Gray Level Run Length Matrix (GLRLM) features from an input image.
+    
+    This function reads an input image in grayscale, computes the GLRLM features,
+    and returns several statistical measurements derived from the GLRLM.
+
+    Parameters:
+    -----------
+    image : str
+        Path to the input image file.
+
+    Returns:
+    --------
+    tuple
+        A tuple containing the following GLRLM features:
+        - SRE (Short Run Emphasis)
+        - LRE (Long Run Emphasis)
+        - GLU (Gray Level Uniformity)
+        - RLU (Run Length Uniformity)
+        - RPC (Run Percentage)
+
+    Example:
+    --------
+    >>> sre, lre, glu, rlu, rpc = calculate_glrlm('path/to/image.png')
+    >>> print(f"SRE: {sre}, LRE: {lre}, GLU: {glu}, RLU: {rlu}, RPC: {rpc}")
+
     """
     app = GLRLM()
     features = app.get_features(image, 8)
     return float(features.SRE), float(features.LRE), float(features.GLU), float(features.RLU), float(features.RPC)
 
+# Find the images according to the image_ID
 def find_image(image_name, root_folder, image_type, suffix):
     """
     Find and load a grayscale image from a root folder with a given suffix.
@@ -139,6 +180,7 @@ def find_image(image_name, root_folder, image_type, suffix):
     print(f"Error: File not found for {image_name + suffix + image_type} in {root_folder}")
     return None
 
+# Process images
 def process_images(image_ids, root_folder, output_csv, original_df):
     """
     Process images based on the image IDs, calculate features, and save results to a new CSV.
@@ -188,9 +230,9 @@ def process_images(image_ids, root_folder, output_csv, original_df):
 
 def main():
     # Define paths
-    csv_path = '/work/Train/train.csv'
+    csv_path = '/work/Train/test.csv'
     root_folder = '/work/Train/'  # Root directory containing the images
-    output_csv = '/work/Train/Features.csv'
+    output_csv = '/work/Train/Features_test.csv'
 
     # Read image IDs from CSV
     image_ids, original_df = read_image_ids(csv_path)
@@ -200,4 +242,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
