@@ -45,11 +45,26 @@ def calculate_hist (hist):
     skewness_hist (float): The skewness of the histogram.
     kurtosis_hist (float): The kurtosis of the histogram.
     """
-    mean_hist = np.mean (hist)
-    median_hist = np.median (hist)
-    std_hist = np.std (hist)
-    skewness_hist = scipy.stats.skew(hist, axis=0, bias=True)
-    kurtosis_hist = scipy.stats.kurtosis(hist, axis=0, fisher=True, bias=True)
+    # Normalize the histogram
+    hist_normalized = hist.ravel() / hist.sum()
+
+    # Calculate the mean 
+    mean_hist = np.sum(hist_normalized * np.arange(256))
+
+    # Calculate the standard deviation 
+    std_hist = np.sqrt(np.sum(hist_normalized * (np.arange(256) - mean_hist)**2))
+
+    # Calculate the skewness 
+    skewness_hist = np.sum(hist_normalized * ((np.arange(256) - mean_hist) ** 3)) / (std_hist ** 3)
+
+    # Calculate the kurtosis 
+    kurtosis_hist = np.sum(hist_normalized * ((np.arange(256) - mean_hist) ** 4)) / (std_hist ** 4)
+
+    # Calculate the cumulative histogram to find the median
+    cumulative_hist = np.cumsum(hist_normalized)
+
+    # Find the median pixel value
+    median_hist = np.searchsorted(cumulative_hist, 0.5)
     return mean_hist, median_hist, std_hist, skewness_hist, kurtosis_hist
 
 
@@ -108,9 +123,8 @@ def calculate_glrlm(image):
     >>> print(f"SRE: {sre}, LRE: {lre}, GLU: {glu}, RLU: {rlu}, RPC: {rpc}")
 
     """
-    img = cv2.imread(image, cv2.IMREAD_GRAYSCALE)
     app = GLRLM()
-    features = app.get_features(img, 8)
+    features = app.get_features(image, 8)
     return features.SRE, features.LRE, features.GLU, features.RLU, features.RPC
 
 
