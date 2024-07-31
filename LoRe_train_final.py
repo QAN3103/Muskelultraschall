@@ -1,7 +1,7 @@
 """
-Muscle Atrophy Detection with Logistic Regression
+Muscle Atrophy Detection with Logistic Regression (LoRe)
 
-This script is intended to develop and train a Logistic Regression (LoRe) model for the purpose of muscle atrophy detection. The process includes the following steps:
+This script is intended to develop and train a LoRe model for the purpose of muscle atrophy detection. The process includes the following steps:
 1. Importing the train feature table.
 2. Separating feature matrix, defined as X_train, and label vector, defined as y_train.
 3. Feature scaling using MinMaxScaler between (0,1). 

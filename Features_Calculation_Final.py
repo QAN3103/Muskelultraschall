@@ -1,32 +1,33 @@
 """
 Script to Calculate Features
+Acknowledgments: This code incorporates elements from source code provided by Muhammad Razif Rizqullah, available at https://github.com/rizquuula
 
-This script demonstrates the Feature Engineering proces. The process includes the following steps:
+This script demonstrates the Feature Engineering process. The process includes the following steps:
 
 1. Reading image IDs from a reference CSV file containing all Image IDs and labels.
 2. Splitting the data set into Training Set and Test Set.
 3. Finding the corresponding bone and muscle image segments in the designated root directory.
 4. Creating histograms for the images and calculating statistical features from the histograms.
-6. Computing texture features using Gray Level Co-occurrence Matrix (GLCM) and Gray Level Run Length Matrix (GLRLM).
-7. Saving the calculated features into new CSV files for both the Training Set and the Test Set.
+5. Computing texture features using Gray Level Co-occurrence Matrix (GLCM) and Gray Level Run Length Matrix (GLRLM).
+6. Saving the calculated features into new CSV files for both the Training Set and the Test Set.
 
 Author: 
 - Quỳnh Anh Nguyễn
 - Heyi Wang
 - Dilan Mohammadi
 - Lea Grün
+- Muhammad Razif Rizqullah 
 
 Functions:
 - read_image_ids(csv_path): Reads image IDs from a CSV file.
 - create_hist(image): Creates a histogram for a grayscale image.
 - calculate_hist(hist): Calculates statistical properties of a histogram.
-- calculate_glcm(image, distances, angles, levels): Calculates the GLCM and its properties.
-- calculate_glrlm(image): Calculates GLRLM features from input image.
+- calculate_glcm(image, distances, angles, levels): Calculates the GLCM features.
+- calculate_glrlm(image): Calculates GLRLM features.
 - find_image(image_name, root_folder, image_type, suffix): Finds and loads a grayscale image from a root folder with a given suffix.
 - process_images(image_ids, root_folder, output_csv, original_df): Processes images based on the image IDs, calculates features, and saves results 
   to a new CSV.
-- main(): Orchestrates the entire workflow of the script, including defining file paths, reading image IDs from a CSV file, processing images to 
-extract features, and saving these features to an output CSV file.
+- main(): Initiate the feature calculation process.
 
 Requirements: 
 - Python 3.x
@@ -145,14 +146,9 @@ def calculate_glrlm(image):
         A tuple containing the following GLRLM features:
         - SRE (Short Run Emphasis)
         - LRE (Long Run Emphasis)
-        - GLU (Gray Level Uniformity)
-        - RLU (Run Length Uniformity)
-        - RPC (Run Percentage)
-
-    Example:
-    --------
-    >>> sre, lre, glu, rlu, rpc = calculate_glrlm('path/to/image.png')
-    >>> print(f"SRE: {sre}, LRE: {lre}, GLU: {glu}, RLU: {rlu}, RPC: {rpc}")
+        - GLNU (Gray Level Uniformity)
+        - RLNU (Run Length Uniformity)
+        - RP (Run Percentage)
 
     """
     app = GLRLM()
@@ -214,10 +210,10 @@ def process_images(image_ids, root_folder, output_csv, original_df):
     # Define columns with appropriate prefixes for bone and muscle features
     bone_columns = ["Image_ID", "bone_Mean_Hist", "bone_Median_Hist", "bone_Std_Hist", "bone_Skewness_Hist", "bone_Kurtosis_Hist", 
                     "bone_Contrast", "bone_Dissimilarity", "bone_Homogeneity", "bone_Energy", "bone_Correlation", "bone_Entropy",
-                    "bone_SRE", "bone_LRE", "bone_GLU", "bone_RLU", "bone_RPC"]
+                    "bone_SRE", "bone_LRE", "bone_GLNU", "bone_RLNU", "bone_RP"]
     muscle_columns = ["Image_ID", "muscle_Mean_Hist", "muscle_Median_Hist", "muscle_Std_Hist", "muscle_Skewness_Hist", "muscle_Kurtosis_Hist", 
                       "muscle_Contrast", "muscle_Dissimilarity", "muscle_Homogeneity", "muscle_Energy", "muscle_Correlation", "muscle_Entropy",
-                      "muscle_SRE", "muscle_LRE", "muscle_GLU", "muscle_RLU", "muscle_RPC"]
+                      "muscle_SRE", "muscle_LRE", "muscle_GLNU", "muscle_RLNU", "muscle_RP"]
 
     # Create DataFrames for bone and muscle features
     bone_results_df = pd.DataFrame(bone_results, columns=bone_columns)

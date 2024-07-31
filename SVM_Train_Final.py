@@ -5,7 +5,7 @@ This script is intended to develop and train a SVM model for the purpose of musc
 1. Importing the train feature table.
 2. Separating feature matrix, defined as X_train, and label vector, defined as y_train.
 3. Feature scaling using MinMaxScaler between (0,1). 
-4. Performing GridSearch to find the best parameter combination of C - Kernel - Gamm. With each parameter combination, a model is trained using cross validation and evaluated based on F1-Score. 
+4. Performing GridSearch to find the best parameter combination of C - Kernel - Gamma. With each parameter combination, a model is trained using cross validation and evaluated based on F1-Score. 
 5. Saving the best model and printing out the best parameter combination.
 
 Authors:
@@ -15,7 +15,7 @@ Authors:
 - Lea Grün
 
 Functions: 
-main(): Initiate the training process.
+- main(): Initiate the training process.
 
 Requirements:
 Python 3.x
@@ -49,6 +49,9 @@ def main():
     # Feature scaling using MinMaxScaler to scale the features to a range of [0, 1].
     scaler = MinMaxScaler(feature_range=(0, 1))
     X_train = pd.DataFrame(scaler.fit_transform(X_train), columns = X_train.columns)
+    
+    # Initiate SVM Model
+    model = SVC()
     
     # Define SVM parameter
     param_grid = {
