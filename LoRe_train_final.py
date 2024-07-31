@@ -1,7 +1,15 @@
 """
 Muscle Atrophy Detection with Logistic Regression
 
-This script is intended to develop and train a Logistic Regression (LoRe) model for the purpose of muscle atrophy detection. Firstly, the train feature table is imported and then separated to create feature matrix, defined as X_train, and label vector, defined as y_train . Additionally, feature scaling using MinMaxScaler is applied to normalise the data between (0,1). A GridSearch is then performed to find the best parameter combination of C - Solver - Penalty. With each parameter combination, a model is trained using cross validation and evaluated based on Accuracy Score. In the end, only the best model is saved and the best parameter combination is printed out.
+This script is intended to develop and train a Logistic Regression (LoRe) model for the purpose of muscle atrophy detection. The process includes the following steps:
+1. Importing the train feature table 
+2. Separating feature matrix, defined as X_train, and label vector, defined as y_train Additionally, 
+3. Feature scaling using MinMaxScaler between (0,1). 
+4. Performing GridSearch to find the best parameter combination of C - Solver - Penalty. With each parameter combination, a model is trained using cross validation and evaluated based on Accuracy Score. 
+5. Saving the best model and printing out the best parameter combination.
+6. Performing Recursive Feature Ablation with Cross-Validation (RFECV) to find the optimal number of features. The model is evaluated using the F1-score for each feature subset.
+7. Printing the optimal number of features and the selected features.
+8. Saving a plot of the number of features vs. cross-validation F1 score.
 
 Authors:
 - Quỳnh Anh Nguyễn
@@ -18,7 +26,6 @@ Requirements:
 
 """
 
-
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import GridSearchCV, KFold
 from sklearn.feature_selection import RFECV
@@ -29,6 +36,9 @@ from sklearn import linear_model
 import pandas as pd
 
 def main():
+    """
+    Main function to execute the training process.
+    """
     # Import the training feature table. 
     # Note: The file path must be updated to the appropriate location before use.
     reference = pd.read_csv('C:/Users/Quynh Anh/Muskelultraschall/features_train.csv')
@@ -80,9 +90,14 @@ def main():
     final_model = grid_search.best_estimator_
     joblib.dump(final_model, 'Lo_Re_model.pkl')
     
-    surrogate_model = linear_model.LogisticRegression(penalty=final_param['penalty'], class_weight= 'balanced', max_iter = 200, C = final_param['C'], solver = final_param['solver'])
+     # Initialize the best model with the best hyperparameters found
+    best_model = linear_model.LogisticRegression(penalty=final_param['penalty'], class_weight= 'balanced', max_iter = 200, C = final_param['C'], solver = final_param['solver'])
+    
+    # Define the scorer for RFECV using F1 score
     scorer = make_scorer(f1_score)
-    rfecv = RFECV(estimator=surrogate_model, step=1, cv=kf, scoring=scorer)
+    
+    # Perform RFECV to select the optimal number of features
+    rfecv = RFECV(estimator=best_model, step=1, cv=KFold(5), scoring=scorer)
 
     # Fit RFECV
     rfecv.fit(X_train, y_train)
