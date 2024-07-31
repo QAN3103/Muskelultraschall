@@ -1,9 +1,14 @@
 """
-Script to Calculate Image Features and Save to a CSV file 
+Script to Calculate Features
 
-This script is for calculating features of images. It reads the image ID from a CSV file and traverses the root directory to find the corresponding 
-bone and muscle images, creating histograms, calculating statistical features from the histograms, and computing texture features using GLCM and GLRLM.
-Finally, it saves the calculated features in a new CSV file.
+This script demonstrates the Feature Engineering proces. The process includes the following steps:
+
+1. Reading image IDs from a reference CSV file containing all Image IDs and labels.
+2. Splitting the data set into Training Set and Test Set.
+3. Finding the corresponding bone and muscle image segments in the designated root directory.
+4. Creating histograms for the images and calculating statistical features from the histograms.
+6. Computing texture features using Gray Level Co-occurrence Matrix (GLCM) and Gray Level Run Length Matrix (GLRLM).
+7. Saving the calculated features into new CSV files for both the Training Set and the Test Set.
 
 Author: 
 - Quỳnh Anh Nguyễn
@@ -25,24 +30,16 @@ extract features, and saving these features to an output CSV file.
 
 Requirements: 
 - Python 3.x
-- Libraries: OpenCV (cv2), Pandas, NumPy, scikit-image, glrlm
+- Libraries: OpenCV (cv2), Pandas, NumPy, scikit-image, glrlm, Scikit-learn
 """
 
-
-# In[ ]:
-
-
-#Import libraries
-#Import all the packages
 import os
 import pandas as pd
 import cv2
 import numpy as np
 from skimage.feature import graycomatrix, graycoprops
+from sklearn.model_selection import train_test_split
 from glrlm import GLRLM
-
-
-# In[ ]:
 
 
 def read_image_ids(csv_path):
@@ -52,7 +49,6 @@ def read_image_ids(csv_path):
     df = pd.read_csv(csv_path)
     return df['Image_ID'].tolist(), df
 
-# Define all the features
 def create_hist(image):
     """
     Create a histogram for a grayscale image.
@@ -163,7 +159,6 @@ def calculate_glrlm(image):
     features = app.get_features(image, 8)
     return float(features.SRE), float(features.LRE), float(features.GLU), float(features.RLU), float(features.RPC)
 
-# Find the images according to the image_ID
 def find_image(image_name, root_folder, image_type, suffix):
     """
     Find and load a grayscale image from a root folder with a given suffix.
@@ -188,7 +183,6 @@ def find_image(image_name, root_folder, image_type, suffix):
     print(f"Error: File not found for {image_name + suffix + image_type} in {root_folder}")
     return None
 
-# Process images
 def process_images(image_ids, root_folder, output_csv, original_df):
     """
     Process images based on the image IDs, calculate features, and save results to a new CSV.
@@ -237,19 +231,50 @@ def process_images(image_ids, root_folder, output_csv, original_df):
     print(f"Results saved to {output_csv}")
 
 def main():
-    # Define paths
-    csv_path = 'test.csv' # file path of the train or test csv table
-    root_folder = r'C:\Users\Qanh\Muskelultraschall'  # Root directory containing the images
-    output_csv = 'Features_test.csv' # define the output of the calculated features table.
+    """
+    Main function to execute the preprocessing, model construction, and training process.
+    """
+    # Read the REFERENCE.CSV file. The directory must be changed before use
+    reference = pd.read_csv('C:/Users/Quynh Anh/Muskelultraschall/REFERENCE.csv')
+    
+    # Extract the 'Image_ID' and 'Krank/Gesund' columns
+    X = reference ['Image_ID']
+    y = reference ['Krank/Gesund']
+    
+    # Split the data into training and test sets with stratification, ratio Training Set:Test Set of 80:20
+    x_train, x_test, y_train, y_test = train_test_split (X, y, test_size=0.2, stratify=y)
+    
+    # Combine the training features and labels into a single DataFrame
+    train_set = pd.concat ((pd.DataFrame(x_train), pd.DataFrame (y_train)), axis = 1)
+    
+    # Combine the test features and labels into a single DataFrame
+    test_set = pd.concat ((pd.DataFrame(x_test), pd.DataFrame (y_test)), axis = 1)
+    
+    # Save the training and test sets to separate CSV files. The directory to save the created file must be changed before use
+    train_set.to_csv ('C:/Users/Quynh Anh/Muskelultraschall/train.csv', index = False)
+    test_set.to_csv ('C:/Users/Quynh Anh/Muskelultraschall/test.csv', index = False)
+    
+    # Define paths for the CSV file, root folder containing images, and output CSV file.
+    csv_path_train = 'train.csv' # file path of train csv table
+    csv_path_test = 'test.csv' # file path of test csv table
+    
+    root_folder = r'C:\Users\Quynh Anh\Muskelultraschall'  # Root directory containing the images
+    
+    output_csv_train = 'Features_train.csv' # define the output of the calculated features table of training set.
+    output_csv_test = 'Features_test.csv' # define the output of the calculated features table of test set.
 
     # Read image IDs from CSV
-    image_ids, original_df = read_image_ids(csv_path)
+    image_ids_train, original_df_train = read_image_ids(csv_path_train)
+    image_ids_test, original_df_test = read_image_ids(csv_path_test)
 
     # Process images and save results
-    process_images(image_ids, root_folder, output_csv, original_df)
+    process_images(image_ids_train, root_folder, output_csv_train, original_df_train)
+    process_images(image_ids_test, root_folder, output_csv_test, original_df_test)
 
 #call main in Jupyternotebook
-main()
+if __name__ == "__main__":
+    print("Starting the script...")
+    main()
 
 
 
