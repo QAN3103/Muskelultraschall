@@ -51,9 +51,12 @@ To further refine the LoRe model, a Feature Importance Analysis is conducted. Th
 Predictions on the Test set by calling model.predict(). The outputs of the SVM and LoRe models are binary classifications, with '1' indicating 'Sick' and '0' indicating 'Healthy.' The output of the ANN spans a continuous range between 0 and 1. To convert this continuous output into a binary classification, a threshold is applied. If the output exceeds the threshold, it is classified as '1' (Sick); otherwise, it is classified as '0' (Healthy). In this project, the optimal threshold was determined to be 0.4.
 
 ## Results
-Each model is evaluated on the following five metrics: F1-Score, Accuracy, Precision, Recall, True Negative Rate (TNR). The results after training the ANN, SVM and LoRe are shown below
+Each model is evaluated on the following five metrics: F1-Score, Accuracy, Precision, Recall, True Negative Rate (TNR). The results after training the ANN, SVM and LoRe are shown below:
+
 ANN: {F1: 0.9, Accuracy: 0.9, Precision: 0.96, Recall: 0.85, TNR: 0.95}
+
 SVM: {F1: 0.88, Accuracy: 0.88, Precision: 0.88, Recall: 0.88, TNR: 0.88}
+
 LoRe: {F1: 0.82, Accuracy: 0.83, Precision: 0.84, Recall: 0.81, TNR: 0.85}
 
 After performing Feature Importance Analysis on LoRe, the top 13 features are: {bone_Std_Hist, bone_Kurtosis_Hist, bone_Contrast, bone_Homegeneity, bone_Energy, bone_Correlation, bone_LRE, bone_GLNU, bone_RLNU, muscle_Mean_Hist, muscle_Std_Hist, muscle_Dissimilarity, muscle_Homogeneity}. Note that this list does not imply a specific ranking or order.
