@@ -2,30 +2,30 @@
 Project by Quynh Anh Nguyen, Lea Grün, Dilan Mohamdi, Heyi Wang
 
 ## Short Overview
-This project contains the necessary code to train an artificial neuronal network (ANN), a support vector machine model (SVM) and a logistic regression (LoRe) model to detect Muscle Atrophy from B-Mode ultrasound images. The dataset consists of a total of 258 images, including 129 normal images and 129 images showing pathological changes. Each image is assigned an imaginary Patient_ID in the format 'TU_xx_123'. Although the images are classified into four grades according to Heckmatt and Dubowitz [1], this project only distinguishes between normal findings (Grade 1) and pathological findings (Grades 2 to 4).
+This project contains the necessary code to train an artificial neural network (ANN), a support vector machine model (SVM), and a logistic regression (LoRe) model to detect Muscle Atrophy from B-Mode ultrasound images. The dataset comprrises 258 images, including 129 normal images and 129 images showing pathological changes. Each image is assigned a hypothetical Patient_ID in the format 'TU_xx_123'. Although the images are classified into four grades according to Heckmatt and Dubowitz [1], this project distinguishes only between normal findings (Grade 1) and pathological findings (Grades 2 to 4).
 
 ## Road Map
 The project consists of the following main steps:
 
 ### 1) Manual Image Segmentation into Bone and Muscle Segments
-Before feature engineering, a region of interest (ROI) from the bone and muscle was manually segmented from each image. For the bone segments, an image size of 256x256 pixels was set. In contrast, the muscle segments were chosen to be smaller, at 128x128 pixels, to ensure that only the relevant muscle structures were included in the image segment. The dataset including the segmented images can be found under: https://hessenbox.tu-darmstadt.de/getlink/fiVDHQ1W6ENZpitGHe3EPTJ7/
+Before feature engineering, a region of interest (ROI) from the bone and muscle was manually segmented from each image. For the bone segments, an image size of 256x256 pixels was set. In contrast, the muscle segments were chosen to be smaller, at 128x128 pixels, to ensure that only the relevant muscle structures were included in the image segment. The dataset including the segmented images can be found at: https://hessenbox.tu-darmstadt.de/getlink/fiVDHQ1W6ENZpitGHe3EPTJ7/
 
 ### 2) Splitting the data into Training Set and Test Set and Calculating Features
-The 'Features_Calculation_final.py' script demonstrates the feature calculation process. It begins by loading the reference data and then splits it into training and test sets. A validation set is ignored due to the limited data available. For both sets, the script calculates features based on the segmented bone and muscle regions. Once the feature computation is complete, the results are saved into separate CSV files. 
+The 'Features_Calculation_final.py' script demonstrates the feature calculation process. It begins by loading the reference data and then splits it into training and test sets. A validation set is not used due to the limited data available. For both sets, the script calculates features based on the segmented bone and muscle regions. Once the feature computation is complete, the results are saved into separate CSV files. 
 #### read_image_ids(csv_path): 
-Read image IDs from a CSV file.
+Reads image IDs from a CSV file.
 #### find_image(image_name, root_folder, image_type, suffix): 
 Finds and loads a grayscale image from a root folder with a given suffix.
 #### create_hist(image): 
-Create a histogram for a grayscale image.
+Creates a histogram for a grayscale image.
 #### calculate_hist(hist): 
-Calculate statistical properties of a histogram: Mean, Median, Standard Deviation, Skewness, Kurtosis
+Calculates statistical properties of a histogram: Mean, Median, Standard Deviation, Skewness, Kurtosis
 #### calculate_glcm(image, distances, angles, levels): 
-Calculate the GLCM features: Contrast, Dissimilarity, Homogeneity, Energy, Correlation, Entropy
+Calculates the GLCM features: Contrast, Dissimilarity, Homogeneity, Energy, Correlation, Entropy
 #### calculate_glrlm(image): 
 Calculates GLRLM features: SRE (Short Runs Emphasis), LRE (Long Runs Emphasis), GLNU (Gray Level Nonuniformity), RLNU (Run Length Nonuniformity) and RP (Run Percentage)
 #### process_images(image_ids, root_folder, output_csv, original_df): 
-Calculate features from bone and muscle segments of the Training set and Test set, and save results to a new CSV.
+Calculates features from bone and muscle segments of the Training set and Test set, and save results to a new CSV.
 
 ### 3) Initiate and train the ANN/SVM/LoRe model
 Before Training, all features must be normalised between (0,1). Cross-validation is incorporated into the training process to compensate for the missing validation set and to ensure robustness. In this project, the following three models are implemented:
