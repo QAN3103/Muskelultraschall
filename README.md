@@ -70,11 +70,13 @@ The data for training is provided by Dr. Ilia Aroyo from Clinic for Neurology an
 ### In case of UnicodeEncodeError, please run the following code: 
 
 import os
+
 os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 ### To handle TensorFlow Warnings, please run the following code:
 
 import os
+
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 
