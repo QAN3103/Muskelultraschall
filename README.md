@@ -2,7 +2,7 @@
 Project by Quynh Anh Nguyen, Lea Grün, Dilan Mohamdi, Heyi Wang
 
 ## Short Overview
-This project contains the necessary code to train an artificial neuronal network (ANN), a support vector machine model (SVM) and a logistic regression model to detect Muscle Atrophy from B-Mode Ultrasound Images. The dataset consists of a total of 258 images, including 129 normal and 129 ultrasound images with pathological changes. Each image is assigned an imaginary Patient_ID in the form 'TU_xx_123'. 
+This project contains the necessary code to train an artificial neuronal network (ANN), a support vector machine model (SVM) and a logistic regression (LoRe) model to detect Muscle Atrophy from B-Mode ultrasound images. The dataset consists of a total of 258 images, including 129 normal images and 129 images showing pathological changes. Each image is assigned an imaginary Patient_ID in the format 'TU_xx_123'. Although the images are classified into four grades according to Heckmatt and Dubowitz, this project only distinguishes between normal findings (Grade 1) and pathological findings (Grades 2 to 4).
 
 ## Road Map
 The code consists of the following main steps:
