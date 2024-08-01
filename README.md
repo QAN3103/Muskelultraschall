@@ -35,8 +35,6 @@ The model architecture is constructed using the Keras API. The model begins with
 
 After Hyperparameter-Tuning, the ANN model was trained using cross-validation with an optimal batch size of 8 and an optimal epoch count of 50. If the validation loss does not improve after 10 epochs, the learning rate will be reduced by a factor of 0.1, with a lower boundary of 0.0000001. Early stopping is also implemented when the validation loss doesn't improve for 20 epochs. In the end, the best model is saved as 'ANN_model.keras'.
 
-The output of the ANN ranges continuously between 0 and 1. To convert this continuous output into a binary classification, a threshold is applied. Values exceeding the threshold are classified as '1' (Sick), while values below or equal to the threshold are classified as '0' (Healthy). In this project, the optimal threshold was determined to be 0.4.
-
 #### 2. SVM Model
 In an SVM model, the primary parameters influencing performance are C, kernel type (linear, rbf, poly, sigmoid), and gamma setting (scale, auto). To identify the optimal combination of these parameters, Hyperparameter-Tuning is performed using GridSearchCV, with the F1 score as the evaluation metric.
 
@@ -48,6 +46,9 @@ In a LoRe model, the primary parameters influencing performance are C, solver (l
 After hyperparameter tuning, the best parameter combination was found to be {C = 0.001, solver = 'sage', and penalty = None}. The optimal model is then saved as 'LoRe_model.pkl'.
 
 To further refine the LoRe model, a Feature Importance Analysis is conducted. This involves systematically removing features (Feature Ablation) and retraining the model. The goal is to identify the feature combination that achieves the highest F1 score through cross-validation.
+
+### 4) Create prediction
+Predictions on the Test set by calling model.predict(). The outputs of the SVM and LoRe models are binary classifications, with '1' indicating 'Sick' and '0' indicating 'Healthy.' The output of the ANN spans a continuous range between 0 and 1. To convert this continuous output into a binary classification, a threshold is applied. If the output exceeds the threshold, it is classified as '1' (Sick); otherwise, it is classified as '0' (Healthy). In this project, the optimal threshold was determined to be 0.4.
 
 ## Results
 Each model is evaluated on the following five metrics: F1-Score, Accuracy, Precision, Recall, True Negative Rate (TNR). The results after training the ANN, SVM and LoRe are shown below
