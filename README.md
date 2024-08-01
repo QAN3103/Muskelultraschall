@@ -8,7 +8,7 @@ This project contains the necessary code to train an artificial neuronal network
 The project consists of the following main steps:
 
 ### 1) Manual Image Segmentation into Bone and Muscle Segments
-Before feature engineering, a region of interest (ROI) from the bone and muscle was manually segmented from each image. For the bone segments, an image size of 256x256 pixels was set. In contrast, the muscle segments were chosen to be smaller, at 128x128 pixels, to ensure that only the relevant muscle structures were included in the image segment.. The dataset including the segmented images can be found under: https://hessenbox.tu-darmstadt.de/getlink/fiVDHQ1W6ENZpitGHe3EPTJ7/
+Before feature engineering, a region of interest (ROI) from the bone and muscle was manually segmented from each image. For the bone segments, an image size of 256x256 pixels was set. In contrast, the muscle segments were chosen to be smaller, at 128x128 pixels, to ensure that only the relevant muscle structures were included in the image segment. The dataset including the segmented images can be found under: https://hessenbox.tu-darmstadt.de/getlink/fiVDHQ1W6ENZpitGHe3EPTJ7/
 
 ### 2) Splitting the data into Training Set and Test Set and Calculating Features
 The 'Features_Calculation_final.py' script demonstrates the feature calculation process. It begins by loading the reference data and then splits it into training and test sets. A validation set is ignored due to the limited data available. For both sets, the script calculates features based on the segmented bone and muscle regions. Once the feature computation is complete, the results are saved into separate CSV files. 
