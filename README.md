@@ -19,7 +19,7 @@ Finds and loads a grayscale image from a root folder with a given suffix.
 #### create_hist(image): 
 Create a histogram for a grayscale image.
 #### calculate_hist(hist): 
-Calculate statistical properties of a histogram, namely Mean, Median, Standard Deviation, Skewness, Kurtosis
+Calculate statistical properties of a histogram: Mean, Median, Standard Deviation, Skewness, Kurtosis
 #### calculate_glcm(image, distances, angles, levels): 
 Calculate the GLCM features: Contrast, Dissimilarity, Homogeneity, Energy, Correlation, Entropy
 #### calculate_glrlm(image): 
