@@ -110,7 +110,7 @@ def main():
         verbose=1)
 
     # ReduceLROnPlateau: Reduce learning rate when a metric has stopped improving, in this case 'val_loss'
-    # If 'val_loss' does not improve after 10 epochs, learning rate will be reduced by factor 0.1 but will not be reduced to lower than 0.0001
+    # If 'val_loss' does not improve after 10 epochs, learning rate will be reduced by factor 0.1 but will not be reduced to lower than 0.0000001
     reduce_lr = ReduceLROnPlateau(
         monitor='val_loss', 
         factor=0.1, 
