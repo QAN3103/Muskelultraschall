@@ -2,7 +2,7 @@
 Project by Quynh Anh Nguyen, Lea Grün, Dilan Mohamdi, Heyi Wang
 
 ## Short Overview
-This project contains the necessary code to train an artificial neural network (ANN), a support vector machine model (SVM), and a logistic regression (LoRe) model to detect Muscle Atrophy from B-Mode ultrasound images. The dataset comprrises 258 images, including 129 normal images and 129 images showing pathological changes. Each image is assigned a hypothetical Patient_ID in the format 'TU_xx_123'. Although the images are classified into four grades according to Heckmatt and Dubowitz [1], this project distinguishes only between normal findings (Grade 1) and pathological findings (Grades 2 to 4).
+This project contains the necessary code to train an artificial neural network (ANN), a support vector machine model (SVM), and a logistic regression (LoRe) model to detect Muscle Atrophy from B-Mode ultrasound images. The dataset consists of 258 images, including 129 normal images and 129 images showing pathological changes. Each image is assigned a hypothetical Patient_ID in the format 'TU_xx_123'. Although the images are classified into four grades according to Heckmatt and Dubowitz [1], this project distinguishes only between normal findings (Grade 1) and pathological findings (Grades 2 to 4).
 
 ## Road Map
 The project consists of the following main steps:
@@ -65,3 +65,16 @@ After performing Feature Importance Analysis on LoRe, the top 13 features are: {
 The data for training is provided by Dr. Ilia Aroyo from Clinic for Neurology and Neurointensive Care Medicine in Darmstadt. This project also utilizes source code from Muhammad Razif Rizqullah, available at https://github.com/rizquuula. We would like to thank both for their valuable contributions to this project.
 
 [1] Heckmatt, J. Z., Leeman, S., & Dubowitz, V. (1982). Ultrasound imaging in the diagnosis of muscle disease. The Journal of pediatrics, 101(5), 656–660. https://doi.org/10.1016/s0022-3476(82)80286-2
+
+## Possible Debugging
+### In case of UnicodeEncodeError, please run the following code: 
+
+import os
+os.environ['PYTHONIOENCODING'] = 'utf-8'
+
+### To handle TensorFlow Warnings, please run the following code:
+
+import os
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+
