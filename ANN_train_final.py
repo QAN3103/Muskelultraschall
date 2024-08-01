@@ -23,7 +23,7 @@ Functions:
 
 Requirements:
 - Python 3.x
-- Libraries: TensorFlow, Keras, Scikit-learn, Pandas, NumPy
+- Libraries: TensorFlow, Keras, Scikit-learn, Pandas, NumPy, SciKeras
 
 """
 
