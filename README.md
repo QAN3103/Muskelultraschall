@@ -45,7 +45,7 @@ In a LoRe model, the primary parameters influencing performance are C, solver (l
 
 After hyperparameter tuning, the best parameter combination was found to be {C = 0.001, solver = 'saga', and penalty = None}. The optimal model is then saved as 'LoRe_model.pkl'.
 
-To further refine the LoRe model, a Feature Importance Analysis is conducted. This involves systematically removing features (Feature Ablation) and retraining the model. The goal is to identify the feature combination that achieves the highest F1 score through cross-validation.
+To further refine the LoRe model, a Feature Importance Analysis using RFECV is conducted. This involves systematically removing features (Feature Ablation) and retraining the model. The goal is to identify the feature combination that achieves the highest F1 score through cross-validation.
 
 ### 4) Create prediction
 Predictions on the Test set can be made by calling model.predict(). The outputs of the SVM and LoRe model are binary classifications, with '1' indicating 'Sick' and '0' indicating 'Healthy.' The output of the ANN spans a continuous range between 0 and 1. To convert this continuous output into a binary classification, a threshold is applied. If the output exceeds the threshold, it is classified as '1' (Sick); otherwise, it is classified as '0' (Healthy). In this project, the optimal threshold was determined to be 0.4.
