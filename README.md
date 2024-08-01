@@ -43,7 +43,7 @@ After hyperparameter tuning, the best parameter combination was found to be {C =
 #### 3. LoRe Model
 In a LoRe model, the primary parameters influencing performance are C, solver (liblinear, lbfgs, newton-cg, sag, saga), and penalty (l1, l2, None). To determine the optimal combination of these parameters, Hyperparameter-Tuning is conducted using GridSearchCV with the F1 score as the evaluation metric.
 
-After hyperparameter tuning, the best parameter combination was found to be {C = 0.001, solver = 'sage', and penalty = None}. The optimal model is then saved as 'LoRe_model.pkl'.
+After hyperparameter tuning, the best parameter combination was found to be {C = 0.001, solver = 'saga', and penalty = None}. The optimal model is then saved as 'LoRe_model.pkl'.
 
 To further refine the LoRe model, a Feature Importance Analysis is conducted. This involves systematically removing features (Feature Ablation) and retraining the model. The goal is to identify the feature combination that achieves the highest F1 score through cross-validation.
 
